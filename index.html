@@ -1,0 +1,2085 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Personal Dashboard</title>
+    <link href="https://cdn.jsdelivr.net/npm/fontsource-roboto@4.0.0/index.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary: #4A90D9;
+            --primary-dark: #3A7BC8;
+            --secondary: #6C7A89;
+            --success: #2ECC71;
+            --warning: #F39C12;
+            --danger: #E74C3C;
+            --light: #ECF0F1;
+            --dark: #2C3E50;
+            --white: #FFFFFF;
+            --shadow: 0 4px 15px rgba(0,0,0,0.1);
+            --radius: 12px;
+        }
+
+        body {
+            font-family: 'Roboto', sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            color: var(--dark);
+        }
+
+        /* Login Screen */
+        .login-screen {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+        }
+
+        .login-box {
+            background: var(--white);
+            padding: 40px 30px;
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
+            width: 90%;
+            max-width: 400px;
+            text-align: center;
+        }
+
+        .login-box h1 {
+            color: var(--primary);
+            margin-bottom: 10px;
+        }
+
+        .login-box p {
+            color: var(--secondary);
+            margin-bottom: 30px;
+        }
+
+        .input-group {
+            margin-bottom: 20px;
+            text-align: left;
+        }
+
+        .input-group label {
+            display: block;
+            margin-bottom: 8px;
+            color: var(--dark);
+            font-weight: 500;
+        }
+
+        .input-group input {
+            width: 100%;
+            padding: 12px 15px;
+            border: 2px solid var(--light);
+            border-radius: 8px;
+            font-size: 16px;
+            transition: border-color 0.3s;
+        }
+
+        .input-group input:focus {
+            outline: none;
+            border-color: var(--primary);
+        }
+
+        .btn {
+            width: 100%;
+            padding: 14px;
+            background: var(--primary);
+            color: var(--white);
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+
+        .btn:hover {
+            background: var(--primary-dark);
+        }
+
+        .btn-secondary {
+            background: var(--secondary);
+        }
+
+        .btn-success {
+            background: var(--success);
+        }
+
+        .btn-danger {
+            background: var(--danger);
+        }
+
+        .verification-code {
+            display: flex;
+            gap: 10px;
+            justify-content: center;
+            margin: 20px 0;
+        }
+
+        .verification-code input {
+            width: 50px;
+            height: 50px;
+            text-align: center;
+            font-size: 24px;
+            border: 2px solid var(--light);
+            border-radius: 8px;
+        }
+
+        /* Main Dashboard */
+        .dashboard {
+            display: none;
+        }
+
+        .header {
+            background: var(--white);
+            padding: 20px;
+            box-shadow: var(--shadow);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .header-top {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+
+        .header h1 {
+            color: var(--primary);
+            font-size: 24px;
+        }
+
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .user-avatar {
+            width: 40px;
+            height: 40px;
+            background: var(--primary);
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            color: var(--white);
+            font-weight: bold;
+        }
+
+        .nav-tabs {
+            display: flex;
+            gap: 10px;
+            overflow-x: auto;
+            padding-bottom: 10px;
+            -webkit-overflow-scrolling: touch;
+        }
+
+        .nav-tab {
+            padding: 10px 20px;
+            background: var(--light);
+            border: none;
+            border-radius: 20px;
+            cursor: pointer;
+            white-space: nowrap;
+            font-size: 14px;
+            transition: all 0.3s;
+        }
+
+        .nav-tab.active {
+            background: var(--primary);
+            color: var(--white);
+        }
+
+        .content {
+            padding: 20px;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .section {
+            display: none;
+            animation: fadeIn 0.3s ease;
+        }
+
+        .section.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .card {
+            background: var(--white);
+            border-radius: var(--radius);
+            padding: 20px;
+            margin-bottom: 20px;
+            box-shadow: var(--shadow);
+        }
+
+        .card h3 {
+            color: var(--primary);
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .grid-2 {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+        }
+
+        .grid-3 {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+        }
+
+        /* Calculator */
+        .calculator {
+            max-width: 350px;
+            margin: 0 auto;
+        }
+
+        .calc-display {
+            background: var(--dark);
+            color: var(--white);
+            padding: 20px;
+            border-radius: 8px;
+            text-align: right;
+            font-size: 32px;
+            margin-bottom: 15px;
+            min-height: 70px;
+            word-wrap: break-word;
+        }
+
+        .calc-buttons {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 10px;
+        }
+
+        .calc-btn {
+            padding: 20px;
+            border: none;
+            border-radius: 8px;
+            font-size: 20px;
+            cursor: pointer;
+            transition: transform 0.1s;
+        }
+
+        .calc-btn:active {
+            transform: scale(0.95);
+        }
+
+        .calc-btn.number {
+            background: var(--light);
+        }
+
+        .calc-btn.operator {
+            background: var(--primary);
+            color: var(--white);
+        }
+
+        .calc-btn.equals {
+            background: var(--success);
+            color: var(--white);
+            grid-column: span 2;
+        }
+
+        .calc-btn.clear {
+            background: var(--danger);
+            color: var(--white);
+        }
+
+        /* Calendar */
+        .calendar-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+
+        .calendar-grid {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            gap: 5px;
+        }
+
+        .calendar-day {
+            padding: 10px;
+            text-align: center;
+            background: var(--light);
+            border-radius: 8px;
+            font-size: 14px;
+        }
+
+        .calendar-day.header {
+            background: var(--primary);
+            color: var(--white);
+            font-weight: bold;
+        }
+
+        .calendar-day.today {
+            background: var(--success);
+            color: var(--white);
+        }
+
+        .calendar-day.selected {
+            background: var(--primary);
+            color: var(--white);
+        }
+
+        /* Expense Tracker */
+        .expense-form {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+            margin-bottom: 15px;
+        }
+
+        .expense-form input, .expense-form select {
+            padding: 10px;
+            border: 2px solid var(--light);
+            border-radius: 8px;
+            font-size: 14px;
+        }
+
+        .expense-list {
+            max-height: 300px;
+            overflow-y: auto;
+        }
+
+        .expense-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 10px;
+            border-bottom: 1px solid var(--light);
+        }
+
+        .expense-total {
+            font-size: 24px;
+            font-weight: bold;
+            color: var(--primary);
+            text-align: center;
+            padding: 15px;
+            background: var(--light);
+            border-radius: 8px;
+            margin-top: 15px;
+        }
+
+        /* Meal Planner */
+        .meal-section {
+            margin-bottom: 20px;
+        }
+
+        .meal-section h4 {
+            color: var(--secondary);
+            margin-bottom: 10px;
+        }
+
+        .meal-input {
+            width: 100%;
+            padding: 10px;
+            border: 2px solid var(--light);
+            border-radius: 8px;
+            margin-bottom: 10px;
+        }
+
+        .meal-summary {
+            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+            color: var(--white);
+            padding: 20px;
+            border-radius: var(--radius);
+            text-align: center;
+        }
+
+        /* Exercise Planner */
+        .exercise-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 10px;
+            background: var(--light);
+            border-radius: 8px;
+            margin-bottom: 10px;
+        }
+
+        .exercise-item input[type="checkbox"] {
+            width: 20px;
+            height: 20px;
+        }
+
+        .exercise-item.completed {
+            opacity: 0.5;
+            text-decoration: line-through;
+        }
+
+        /* Password Manager */
+        .password-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px;
+            background: var(--light);
+            border-radius: 8px;
+            margin-bottom: 10px;
+        }
+
+        .password-item .password-value {
+            font-family: monospace;
+            background: var(--white);
+            padding: 5px 10px;
+            border-radius: 4px;
+        }
+
+        .password-item .actions {
+            display: flex;
+            gap: 5px;
+        }
+
+        .password-item .actions button {
+            padding: 5px 10px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 12px;
+        }
+
+        /* Social Accounts */
+        .social-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 15px;
+        }
+
+        .social-card {
+            background: var(--light);
+            padding: 20px;
+            border-radius: var(--radius);
+            text-align: center;
+            cursor: pointer;
+            transition: transform 0.3s;
+        }
+
+        .social-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .social-card i {
+            font-size: 40px;
+            margin-bottom: 10px;
+        }
+
+        .social-card.facebook i { color: #3b5998; }
+        .social-card.twitter i { color: #1da1f2; }
+        .social-card.instagram i { color: #e4405f; }
+        .social-card.linkedin i { color: #0077b5; }
+        .social-card.youtube i { color: #ff0000; }
+        .social-card.github i { color: #333; }
+
+        /* Document Reader */
+        .document-list {
+            max-height: 400px;
+            overflow-y: auto;
+        }
+
+        .document-item {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            padding: 15px;
+            background: var(--light);
+            border-radius: 8px;
+            margin-bottom: 10px;
+            cursor: pointer;
+        }
+
+        .document-item i {
+            font-size: 30px;
+            color: var(--primary);
+        }
+
+        .document-viewer {
+            background: var(--white);
+            border: 1px solid var(--light);
+            border-radius: 8px;
+            padding: 20px;
+            min-height: 300px;
+            max-height: 500px;
+            overflow-y: auto;
+            margin-top: 15px;
+        }
+
+        /* AI Assistant */
+        .ai-chat {
+            max-height: 400px;
+            overflow-y: auto;
+            margin-bottom: 15px;
+        }
+
+        .ai-message {
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 10px;
+        }
+
+        .ai-message.user {
+            background: var(--primary);
+            color: var(--white);
+            margin-left: 50px;
+        }
+
+        .ai-message.ai {
+            background: var(--light);
+            margin-right: 50px;
+        }
+
+        .ai-input {
+            display: flex;
+            gap: 10px;
+        }
+
+        .ai-input input {
+            flex: 1;
+            padding: 12px;
+            border: 2px solid var(--light);
+            border-radius: 8px;
+            font-size: 14px;
+        }
+
+        .ai-input button {
+            padding: 12px 25px;
+            background: var(--primary);
+            color: var(--white);
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+        }
+
+        /* Timetable */
+        .timetable-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+        }
+
+        .timetable-day {
+            background: var(--light);
+            border-radius: 8px;
+            padding: 15px;
+        }
+
+        .timetable-day h4 {
+            color: var(--primary);
+            margin-bottom: 10px;
+            text-align: center;
+        }
+
+        .timetable-item {
+            background: var(--white);
+            padding: 8px;
+            border-radius: 4px;
+            margin-bottom: 5px;
+            font-size: 13px;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .header h1 {
+                font-size: 20px;
+            }
+
+            .nav-tab {
+                padding: 8px 15px;
+                font-size: 12px;
+            }
+
+            .grid-2, .grid-3 {
+                grid-template-columns: 1fr;
+            }
+
+            .expense-form {
+                grid-template-columns: 1fr;
+            }
+
+            .verification-code input {
+                width: 40px;
+                height: 40px;
+                font-size: 18px;
+            }
+        }
+
+        /* Toast Notification */
+        .toast {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background: var(--dark);
+            color: var(--white);
+            padding: 15px 25px;
+            border-radius: 8px;
+            box-shadow: var(--shadow);
+            transform: translateY(100px);
+            opacity: 0;
+            transition: all 0.3s;
+            z-index: 1000;
+        }
+
+        .toast.show {
+            transform: translateY(0);
+            opacity: 1;
+        }
+
+        .toast.success {
+            background: var(--success);
+        }
+
+        .toast.error {
+            background: var(--danger);
+        }
+
+        /* Modal */
+        .modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.5);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+        }
+
+        .modal.show {
+            display: flex;
+        }
+
+        .modal-content {
+            background: var(--white);
+            padding: 30px;
+            border-radius: var(--radius);
+            width: 90%;
+            max-width: 500px;
+            max-height: 80vh;
+            overflow-y: auto;
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .modal-close {
+            background: none;
+            border: none;
+            font-size: 24px;
+            cursor: pointer;
+            color: var(--secondary);
+        }
+    </style>
+</head>
+<body>
+    <!-- Login Screen -->
+    <div class="login-screen" id="loginScreen">
+        <div class="login-box">
+            <h1><i class="fas fa-shield-alt"></i> Secure Dashboard</h1>
+            <p>Enter your credentials to access your personal dashboard</p>
+            
+            <div id="emailStep">
+                <div class="input-group">
+                    <label>Email Address</label>
+                    <input type="email" id="loginEmail" placeholder="your@email.com">
+                </div>
+                <button class="btn" onclick="sendVerificationCode()">Send Verification Code</button>
+            </div>
+
+            <div id="codeStep" style="display: none;">
+                <p>Enter the 6-digit code sent to your email</p>
+                <div class="verification-code">
+                    <input type="text" maxlength="1" class="code-input">
+                    <input type="text" maxlength="1" class="code-input">
+                    <input type="text" maxlength="1" class="code-input">
+                    <input type="text" maxlength="1" class="code-input">
+                    <input type="text" maxlength="1" class="code-input">
+                    <input type="text" maxlength="1" class="code-input">
+                </div>
+                <button class="btn" onclick="verifyCode()">Verify & Login</button>
+                <button class="btn btn-secondary" style="margin-top: 10px;" onclick="resendCode()">Resend Code</button>
+            </div>
+
+            <div id="passwordStep" style="display: none;">
+                <div class="input-group">
+                    <label>Master Password</label>
+                    <input type="password" id="masterPassword" placeholder="Enter your master password">
+                </div>
+                <button class="btn" onclick="verifyPassword()">Unlock Dashboard</button>
+                <p style="margin-top: 15px; font-size: 12px; color: var(--secondary);">
+                    First time? Your master password will be set now.
+                </p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main Dashboard -->
+    <div class="dashboard" id="dashboard">
+        <header class="header">
+            <div class="header-top">
+                <h1><i class="fas fa-th-large"></i> Personal Dashboard</h1>
+                <div class="user-info">
+                    <span id="userEmailDisplay">user@email.com</span>
+                    <div class="user-avatar" id="userAvatar">U</div>
+                    <button class="btn btn-danger" style="width: auto; padding: 10px 15px;" onclick="logout()">
+                        <i class="fas fa-sign-out-alt"></i>
+                    </button>
+                </div>
+            </div>
+            <nav class="nav-tabs">
+                <button class="nav-tab active" onclick="showSection('overview')">
+                    <i class="fas fa-home"></i> Overview
+                </button>
+                <button class="nav-tab" onclick="showSection('calculator')">
+                    <i class="fas fa-calculator"></i> Calculator
+                </button>
+                <button class="nav-tab" onclick="showSection('calendar')">
+                    <i class="fas fa-calendar"></i> Calendar
+                </button>
+                <button class="nav-tab" onclick="showSection('expenses')">
+                    <i class="fas fa-wallet"></i> Expenses
+                </button>
+                <button class="nav-tab" onclick="showSection('meals')">
+                    <i class="fas fa-utensils"></i> Meals
+                </button>
+                <button class="nav-tab" onclick="showSection('exercise')">
+                    <i class="fas fa-dumbbell"></i> Exercise
+                </button>
+                <button class="nav-tab" onclick="showSection('passwords')">
+                    <i class="fas fa-key"></i> Passwords
+                </button>
+                <button class="nav-tab" onclick="showSection('social')">
+                    <i class="fas fa-share-alt"></i> Social
+                </button>
+                <button class="nav-tab" onclick="showSection('documents')">
+                    <i class="fas fa-file-alt"></i> Documents
+                </button>
+                <button class="nav-tab" onclick="showSection('timetable')">
+                    <i class="fas fa-clock"></i> Timetable
+                </button>
+                <button class="nav-tab" onclick="showSection('ai')">
+                    <i class="fas fa-robot"></i> AI Assistant
+                </button>
+            </nav>
+        </header>
+
+        <main class="content">
+            <!-- Overview Section -->
+            <section class="section active" id="overview">
+                <div class="grid-3">
+                    <div class="card">
+                        <h3><i class="fas fa-wallet"></i> Monthly Expenses</h3>
+                        <div class="expense-total" id="overviewExpenses">$0.00</div>
+                    </div>
+                    <div class="card">
+                        <h3><i class="fas fa-calendar-check"></i> Today's Schedule</h3>
+                        <div id="overviewSchedule">
+                            <p>No events scheduled</p>
+                        </div>
+                    </div>
+                    <div class="card">
+                        <h3><i class="fas fa-utensils"></i> Today's Meals</h3>
+                        <div id="overviewMeals">
+                            <p>No meals logged</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="grid-2">
+                    <div class="card">
+                        <h3><i class="fas fa-dumbbell"></i> Exercise Progress</h3>
+                        <div id="overviewExercise">
+                            <p>No exercises logged</p>
+                        </div>
+                    </div>
+                    <div class="card">
+                        <h3><i class="fas fa-chart-line"></i> Quick Stats</h3>
+                        <div id="overviewStats">
+                            <p>Loading stats...</p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Calculator Section -->
+            <section class="section" id="calculator">
+                <div class="card calculator">
+                    <h3><i class="fas fa-calculator"></i> Calculator</h3>
+                    <div class="calc-display" id="calcDisplay">0</div>
+                    <div class="calc-buttons">
+                        <button class="calc-btn clear" onclick="calcClear()">C</button>
+                        <button class="calc-btn operator" onclick="calcAppend('/')">÷</button>
+                        <button class="calc-btn operator" onclick="calcAppend('*')">×</button>
+                        <button class="calc-btn operator" onclick="calcBackspace()">⌫</button>
+                        <button class="calc-btn number" onclick="calcAppend('7')">7</button>
+                        <button class="calc-btn number" onclick="calcAppend('8')">8</button>
+                        <button class="calc-btn number" onclick="calcAppend('9')">9</button>
+                        <button class="calc-btn operator" onclick="calcAppend('-')">-</button>
+                        <button class="calc-btn number" onclick="calcAppend('4')">4</button>
+                        <button class="calc-btn number" onclick="calcAppend('5')">5</button>
+                        <button class="calc-btn number" onclick="calcAppend('6')">6</button>
+                        <button class="calc-btn operator" onclick="calcAppend('+')">+</button>
+                        <button class="calc-btn number" onclick="calcAppend('1')">1</button>
+                        <button class="calc-btn number" onclick="calcAppend('2')">2</button>
+                        <button class="calc-btn number" onclick="calcAppend('3')">3</button>
+                        <button class="calc-btn number" onclick="calcAppend('.')">.</button>
+                        <button class="calc-btn number" onclick="calcAppend('0')">0</button>
+                        <button class="calc-btn equals" onclick="calcCalculate()">=</button>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Calendar Section -->
+            <section class="section" id="calendar">
+                <div class="card">
+                    <h3><i class="fas fa-calendar-alt"></i> Calendar</h3>
+                    <div class="calendar-header">
+                        <button class="btn btn-secondary" style="width: auto;" onclick="prevMonth()">
+                            <i class="fas fa-chevron-left"></i>
+                        </button>
+                        <h4 id="calendarMonthYear">January 2025</h4>
+                        <button class="btn btn-secondary" style="width: auto;" onclick="nextMonth()">
+                            <i class="fas fa-chevron-right"></i>
+                        </button>
+                    </div>
+                    <div class="calendar-grid" id="calendarGrid">
+                        <!-- Calendar days will be generated here -->
+                    </div>
+                    <div style="margin-top: 20px;">
+                        <h4>Events for <span id="selectedDateDisplay">Today</span></h4>
+                        <div id="calendarEvents" style="margin-top: 10px;">
+                            <p>No events</p>
+                        </div>
+                        <button class="btn" style="margin-top: 15px;" onclick="openAddEventModal()">
+                            <i class="fas fa-plus"></i> Add Event
+                        </button>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Expenses Section -->
+            <section class="section" id="expenses">
+                <div class="card">
+                    <h3><i class="fas fa-wallet"></i> Expense Tracker</h3>
+                    <div class="expense-form">
+                        <input type="text" id="expenseDescription" placeholder="Description">
+                        <input type="number" id="expenseAmount" placeholder="Amount ($)">
+                        <select id="expenseCategory">
+                            <option value="food">Food</option>
+                            <option value="transport">Transport</option>
+                            <option value="shopping">Shopping</option>
+                            <option value="bills">Bills</option>
+                            <option value="entertainment">Entertainment</option>
+                            <option value="other">Other</option>
+                        </select>
+                        <input type="date" id="expenseDate">
+                    </div>
+                    <button class="btn" onclick="addExpense()">
+                        <i class="fas fa-plus"></i> Add Expense
+                    </button>
+                    <div class="expense-total" id="expenseTotal">$0.00</div>
+                    <div class="expense-list" id="expenseList" style="margin-top: 20px;">
+                        <!-- Expenses will be listed here -->
+                    </div>
+                </div>
+            </section>
+
+            <!-- Meals Section -->
+            <section class="section" id="meals">
+                <div class="card">
+                    <h3><i class="fas fa-utensils"></i> Meal Planner</h3>
+                    <div class="meal-section">
+                        <h4><i class="fas fa-sun"></i> Breakfast</h4>
+                        <input type="text" class="meal-input" id="breakfastInput" placeholder="What did you have for breakfast?">
+                        <button class="btn btn-secondary" onclick="saveMeal('breakfast')">Save Breakfast</button>
+                    </div>
+                    <div class="meal-section">
+                        <h4><i class="fas fa-cloud-sun"></i> Lunch</h4>
+                        <input type="text" class="meal-input" id="lunchInput" placeholder="What did you have for lunch?">
+                        <button class="btn btn-secondary" onclick="saveMeal('lunch')">Save Lunch</button>
+                    </div>
+                    <div class="meal-section">
+                        <h4><i class="fas fa-moon"></i> Dinner</h4>
+                        <input type="text" class="meal-input" id="dinnerInput" placeholder="What did you have for dinner?">
+                        <button class="btn btn-secondary" onclick="saveMeal('dinner')">Save Dinner</button>
+                    </div>
+                    <div class="meal-summary" id="mealSummary">
+                        <h4>Today's Meals</h4>
+                        <p id="mealSummaryText">No meals logged yet</p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Exercise Section -->
+            <section class="section" id="exercise">
+                <div class="card">
+                    <h3><i class="fas fa-dumbbell"></i> Exercise Planner</h3>
+                    <div style="display: flex; gap: 10px; margin-bottom: 15px;">
+                        <input type="text" id="exerciseInput" placeholder="Exercise name" style="flex: 1; padding: 10px; border: 2px solid var(--light); border-radius: 8px;">
+                        <input type="number" id="exerciseDuration" placeholder="Minutes" style="width: 100px; padding: 10px; border: 2px solid var(--light); border-radius: 8px;">
+                        <button class="btn" onclick="addExercise()" style="width: auto;">Add</button>
+                    </div>
+                    <div id="exerciseList">
+                        <!-- Exercises will be listed here -->
+                    </div>
+                    <div class="meal-summary" style="margin-top: 20px;">
+                        <h4>Today's Activity</h4>
+                        <p id="exerciseSummary">0 minutes exercised</p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Passwords Section -->
+            <section class="section" id="passwords">
+                <div class="card">
+                    <h3><i class="fas fa-key"></i> Password Manager</h3>
+                    <div style="display: flex; gap: 10px; margin-bottom: 15px;">
+                        <input type="text" id="passwordSite" placeholder="Website/Service" style="flex: 1; padding: 10px; border: 2px solid var(--light); border-radius: 8px;">
+                        <input type="text" id="passwordUsername" placeholder="Username" style="flex: 1; padding: 10px; border: 2px solid var(--light); border-radius: 8px;">
+                        <input type="text" id="passwordValue" placeholder="Password" style="flex: 1; padding: 10px; border: 2px solid var(--light); border-radius: 8px;">
+                        <button class="btn" onclick="addPassword()" style="width: auto;">Save</button>
+                    </div>
+                    <div id="passwordList">
+                        <!-- Passwords will be listed here -->
+                    </div>
+                </div>
+            </section>
+
+            <!-- Social Section -->
+            <section class="section" id="social">
+                <div class="card">
+                    <h3><i class="fas fa-share-alt"></i> Social Accounts</h3>
+                    <p style="margin-bottom: 20px; color: var(--secondary);">Click on an account to copy the username</p>
+                    <div class="social-grid" id="socialGrid">
+                        <div class="social-card facebook" onclick="copySocial('facebook')">
+                            <i class="fab fa-facebook"></i>
+                            <p>Facebook</p>
+                            <span id="social-facebook">Not set</span>
+                        </div>
+                        <div class="social-card twitter" onclick="copySocial('twitter')">
+                            <i class="fab fa-twitter"></i>
+                            <p>Twitter</p>
+                            <span id="social-twitter">Not set</span>
+                        </div>
+                        <div class="social-card instagram" onclick="copySocial('instagram')">
+                            <i class="fab fa-instagram"></i>
+                            <p>Instagram</p>
+                            <span id="social-instagram">Not set</span>
+                        </div>
+                        <div class="social-card linkedin" onclick="copySocial('linkedin')">
+                            <i class="fab fa-linkedin"></i>
+                            <p>LinkedIn</p>
+                            <span id="social-linkedin">Not set</span>
+                        </div>
+                        <div class="social-card youtube" onclick="copySocial('youtube')">
+                            <i class="fab fa-youtube"></i>
+                            <p>YouTube</p>
+                            <span id="social-youtube">Not set</span>
+                        </div>
+                        <div class="social-card github" onclick="copySocial('github')">
+                            <i class="fab fa-github"></i>
+                            <p>GitHub</p>
+                            <span id="social-github">Not set</span>
+                        </div>
+                    </div>
+                    <button class="btn btn-secondary" style="margin-top: 20px;" onclick="openSocialEditModal()">
+                        <i class="fas fa-edit"></i> Edit Accounts
+                    </button>
+                </div>
+            </section>
+
+            <!-- Documents Section -->
+            <section class="section" id="documents">
+                <div class="card">
+                    <h3><i class="fas fa-file-alt"></i> Document Reader</h3>
+                    <div style="display: flex; gap: 10px; margin-bottom: 15px;">
+                        <input type="text" id="documentTitle" placeholder="Document title" style="flex: 1; padding: 10px; border: 2px solid var(--light); border-radius: 8px;">
+                        <button class="btn" onclick="createDocument()" style="width: auto;">
+                            <i class="fas fa-plus"></i> New
+                        </button>
+                    </div>
+                    <div class="document-list" id="documentList">
+                        <!-- Documents will be listed here -->
+                    </div>
+                </div>
+            </section>
+
+            <!-- Timetable Section -->
+            <section class="section" id="timetable">
+                <div class="card">
+                    <h3><i class="fas fa-clock"></i> Weekly Timetable</h3>
+                    <button class="btn" style="margin-bottom: 15px;" onclick="openAddTimetableModal()">
+                        <i class="fas fa-plus"></i> Add Schedule
+                    </button>
+                    <div class="timetable-grid" id="timetableGrid">
+                        <!-- Timetable will be generated here -->
+                    </div>
+                </div>
+            </section>
+
+            <!-- AI Assistant Section -->
+            <section class="section" id="ai">
+                <div class="card">
+                    <h3><i class="fas fa-robot"></i> AI Assistant</h3>
+                    <div class="ai-chat" id="aiChat">
+                        <div class="ai-message ai">
+                            <strong>AI Assistant:</strong>
+                            <p>Hello! I'm your personal AI assistant. I can help you with:</p>
+                            <ul style="margin-left: 20px; margin-top: 10px;">
+                                <li>Answering questions</li>
+                                <li>Creating summaries</li>
+                                <li>Providing tips and advice</li>
+                                <li>Helping with calculations</li>
+                            </ul>
+                            <p>How can I help you today?</p>
+                        </div>
+                    </div>
+                    <div class="ai-input">
+                        <input type="text" id="aiInput" placeholder="Ask me anything..." onkeypress="if(event.key==='Enter')sendAIMessage()">
+                        <button onclick="sendAIMessage()">
+                            <i class="fas fa-paper-plane"></i> Send
+                        </button>
+                    </div>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <!-- Toast Notification -->
+    <div class="toast" id="toast"></div>
+
+    <!-- Add Event Modal -->
+    <div class="modal" id="addEventModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Add Event</h3>
+                <button class="modal-close" onclick="closeModal('addEventModal')">&times;</button>
+            </div>
+            <div class="input-group">
+                <label>Event Title</label>
+                <input type="text" id="eventTitle" placeholder="Event title">
+            </div>
+            <div class="input-group">
+                <label>Time</label>
+                <input type="time" id="eventTime">
+            </div>
+            <div class="input-group">
+                <label>Description</label>
+                <input type="text" id="eventDescription" placeholder="Event description">
+            </div>
+            <button class="btn" onclick="saveEvent()">Save Event</button>
+        </div>
+    </div>
+
+    <!-- Social Edit Modal -->
+    <div class="modal" id="socialEditModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Edit Social Accounts</h3>
+                <button class="modal-close" onclick="closeModal('socialEditModal')">&times;</button>
+            </div>
+            <div class="input-group">
+                <label>Facebook Username</label>
+                <input type="text" id="editFacebook" placeholder="@username">
+            </div>
+            <div class="input-group">
+                <label>Twitter Username</label>
+                <input type="text" id="editTwitter" placeholder="@username">
+            </div>
+            <div class="input-group">
+                <label>Instagram Username</label>
+                <input type="text" id="editInstagram" placeholder="@username">
+            </div>
+            <div class="input-group">
+                <label>LinkedIn Username</label>
+                <input type="text" id="editLinkedin" placeholder="@username">
+            </div>
+            <div class="input-group">
+                <label>YouTube Channel</label>
+                <input type="text" id="editYoutube" placeholder="Channel name">
+            </div>
+            <div class="input-group">
+                <label>GitHub Username</label>
+                <input type="text" id="editGithub" placeholder="@username">
+            </div>
+            <button class="btn" onclick="saveSocialAccounts()">Save Accounts</button>
+        </div>
+    </div>
+
+    <!-- Add Timetable Modal -->
+    <div class="modal" id="addTimetableModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Add Schedule</h3>
+                <button class="modal-close" onclick="closeModal('addTimetableModal')">&times;</button>
+            </div>
+            <div class="input-group">
+                <label>Day</label>
+                <select id="timetableDay">
+                    <option value="Monday">Monday</option>
+                    <option value="Tuesday">Tuesday</option>
+                    <option value="Wednesday">Wednesday</option>
+                    <option value="Thursday">Thursday</option>
+                    <option value="Friday">Friday</option>
+                    <option value="Saturday">Saturday</option>
+                    <option value="Sunday">Sunday</option>
+                </select>
+            </div>
+            <div class="input-group">
+                <label>Time</label>
+                <input type="time" id="timetableTime">
+            </div>
+            <div class="input-group">
+                <label>Activity</label>
+                <input type="text" id="timetableActivity" placeholder="Activity name">
+            </div>
+            <button class="btn" onclick="saveTimetable()">Save Schedule</button>
+        </div>
+    </div>
+
+    <!-- Document Viewer Modal -->
+    <div class="modal" id="documentViewerModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 id="documentViewerTitle">Document</h3>
+                <button class="modal-close" onclick="closeModal('documentViewerModal')">&times;</button>
+            </div>
+            <textarea id="documentViewerContent" style="width: 100%; height: 300px; padding: 15px; border: 2px solid var(--light); border-radius: 8px; font-family: inherit; font-size: 14px;"></textarea>
+            <button class="btn" style="margin-top: 15px;" onclick="saveDocumentContent()">Save Changes</button>
+            <button class="btn btn-danger" style="margin-top: 10px;" onclick="deleteCurrentDocument()">Delete Document</button>
+        </div>
+    </div>
+
+    <script>
+        // Global State
+        let currentUser = null;
+        let verificationCode = null;
+        let currentCalendarDate = new Date();
+        let selectedCalendarDate = new Date();
+        let currentDocumentId = null;
+
+        // Initialize App
+        document.addEventListener('DOMContentLoaded', function() {
+            checkLoginStatus();
+            setupCodeInputs();
+            document.getElementById('expenseDate').valueAsDate = new Date();
+        });
+
+        // Setup verification code inputs
+        function setupCodeInputs() {
+            const codeInputs = document.querySelectorAll('.code-input');
+            codeInputs.forEach((input, index) => {
+                input.addEventListener('input', function() {
+                    if (this.value.length === 1 && index < codeInputs.length - 1) {
+                        codeInputs[index + 1].focus();
+                    }
+                });
+                input.addEventListener('keydown', function(e) {
+                    if (e.key === 'Backspace' && !this.value && index > 0) {
+                        codeInputs[index - 1].focus();
+                    }
+                });
+            });
+        }
+
+        // Check if user is already logged in
+        function checkLoginStatus() {
+            const savedUser = localStorage.getItem('dashboardUser');
+            if (savedUser) {
+                currentUser = JSON.parse(savedUser);
+                document.getElementById('loginScreen').style.display = 'none';
+                document.getElementById('dashboard').style.display = 'block';
+                initializeDashboard();
+            }
+        }
+
+        // Send verification code
+        function sendVerificationCode() {
+            const email = document.getElementById('loginEmail').value;
+            if (!email || !email.includes('@')) {
+                showToast('Please enter a valid email address', 'error');
+                return;
+            }
+
+            // Generate random 6-digit code
+            verificationCode = Math.floor(100000 + Math.random() * 900000).toString();
+            
+            // In real app, send via email API. Here we simulate it.
+            console.log('Verification code:', verificationCode);
+            showToast('Verification code sent! (Check console: ' + verificationCode + ')', 'success');
+            
+            document.getElementById('emailStep').style.display = 'none';
+            document.getElementById('codeStep').style.display = 'block';
+            
+            // Focus first input
+            document.querySelector('.code-input').focus();
+        }
+
+        // Verify code
+        function verifyCode() {
+            const codeInputs = document.querySelectorAll('.code-input');
+            const enteredCode = Array.from(codeInputs).map(input => input.value).join('');
+            
+            if (enteredCode === verificationCode) {
+                document.getElementById('codeStep').style.display = 'none';
+                document.getElementById('passwordStep').style.display = 'block';
+                showToast('Code verified!', 'success');
+            } else {
+                showToast('Invalid verification code', 'error');
+            }
+        }
+
+        // Resend code
+        function resendCode() {
+            verificationCode = Math.floor(100000 + Math.random() * 900000).toString();
+            showToast('New code sent! (Check console: ' + verificationCode + ')', 'success');
+            console.log('New verification code:', verificationCode);
+        }
+
+        // Verify password and login
+        function verifyPassword() {
+            const password = document.getElementById('masterPassword').value;
+            const email = document.getElementById('loginEmail').value;
+            
+            if (!password || password.length < 4) {
+                showToast('Password must be at least 4 characters', 'error');
+                return;
+            }
+
+            // Save user data
+            currentUser = {
+                email: email,
+                password: password,
+                loginDate: new Date().toISOString()
+            };
+            
+            localStorage.setItem('dashboardUser', JSON.stringify(currentUser));
+            
+            document.getElementById('loginScreen').style.display = 'none';
+            document.getElementById('dashboard').style.display = 'block';
+            initializeDashboard();
+            showToast('Welcome to your dashboard!', 'success');
+        }
+
+        // Logout
+        function logout() {
+            localStorage.removeItem('dashboardUser');
+            location.reload();
+        }
+
+        // Initialize Dashboard
+        function initializeDashboard() {
+            document.getElementById('userEmailDisplay').textContent = currentUser.email;
+            document.getElementById('userAvatar').textContent = currentUser.email.charAt(0).toUpperCase();
+            
+            // Load all data
+            renderCalendar();
+            loadExpenses();
+            loadMeals();
+            loadExercises();
+            loadPasswords();
+            loadSocialAccounts();
+            loadDocuments();
+            loadTimetable();
+            updateOverview();
+        }
+
+        // Show Section
+        function showSection(sectionId) {
+            document.querySelectorAll('.section').forEach(section => {
+                section.classList.remove('active');
+            });
+            document.querySelectorAll('.nav-tab').forEach(tab => {
+                tab.classList.remove('active');
+            });
+            
+            document.getElementById(sectionId).classList.add('active');
+            event.target.closest('.nav-tab').classList.add('active');
+            
+            if (sectionId === 'overview') {
+                updateOverview();
+            }
+        }
+
+        // Toast Notification
+        function showToast(message, type = 'info') {
+            const toast = document.getElementById('toast');
+            toast.textContent = message;
+            toast.className = 'toast ' + type + ' show';
+            setTimeout(() => {
+                toast.classList.remove('show');
+            }, 3000);
+        }
+
+        // Modal Functions
+        function openAddEventModal() {
+            document.getElementById('addEventModal').classList.add('show');
+        }
+
+        function openSocialEditModal() {
+            const accounts = JSON.parse(localStorage.getItem('socialAccounts') || '{}');
+            document.getElementById('editFacebook').value = accounts.facebook || '';
+            document.getElementById('editTwitter').value = accounts.twitter || '';
+            document.getElementById('editInstagram').value = accounts.instagram || '';
+            document.getElementById('editLinkedin').value = accounts.linkedin || '';
+            document.getElementById('editYoutube').value = accounts.youtube || '';
+            document.getElementById('editGithub').value = accounts.github || '';
+            document.getElementById('socialEditModal').classList.add('show');
+        }
+
+        function openAddTimetableModal() {
+            document.getElementById('addTimetableModal').classList.add('show');
+        }
+
+        function closeModal(modalId) {
+            document.getElementById(modalId).classList.remove('show');
+        }
+
+        // Calculator Functions
+        let calcExpression = '';
+        
+        function calcAppend(value) {
+            calcExpression += value;
+            document.getElementById('calcDisplay').textContent = calcExpression || '0';
+        }
+
+        function calcClear() {
+            calcExpression = '';
+            document.getElementById('calcDisplay').textContent = '0';
+        }
+
+        function calcBackspace() {
+            calcExpression = calcExpression.slice(0, -1);
+            document.getElementById('calcDisplay').textContent = calcExpression || '0';
+        }
+
+        function calcCalculate() {
+            try {
+                const result = eval(calcExpression);
+                calcExpression = result.toString();
+                document.getElementById('calcDisplay').textContent = result;
+            } catch (e) {
+                document.getElementById('calcDisplay').textContent = 'Error';
+                calcExpression = '';
+            }
+        }
+
+        // Calendar Functions
+        function renderCalendar() {
+            const year = currentCalendarDate.getFullYear();
+            const month = currentCalendarDate.getMonth();
+            
+            const monthNames = ['January', 'February', 'March', 'April', 'May', 'June',
+                'July', 'August', 'September', 'October', 'November', 'December'];
+            
+            document.getElementById('calendarMonthYear').textContent = monthNames[month] + ' ' + year;
+            
+            const firstDay = new Date(year, month, 1).getDay();
+            const daysInMonth = new Date(year, month + 1, 0).getDate();
+            
+            const grid = document.getElementById('calendarGrid');
+            grid.innerHTML = '';
+            
+            // Day headers
+            const dayNames = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+            dayNames.forEach(day => {
+                grid.innerHTML += `<div class="calendar-day header">${day}</div>`;
+            });
+            
+            // Empty cells for days before first day
+            for (let i = 0; i < firstDay; i++) {
+                grid.innerHTML += `<div class="calendar-day"></div>`;
+            }
+            
+            // Days of month
+            const today = new Date();
+            for (let day = 1; day <= daysInMonth; day++) {
+                const isToday = day === today.getDate() && month === today.getMonth() && year === today.getFullYear();
+                const isSelected = day === selectedCalendarDate.getDate() && 
+                    month === selectedCalendarDate.getMonth() && 
+                    year === selectedCalendarDate.getFullYear();
+                
+                let className = 'calendar-day';
+                if (isToday) className += ' today';
+                if (isSelected) className += ' selected';
+                
+                grid.innerHTML += `<div class="${className}" onclick="selectDate(${day})">${day}</div>`;
+            }
+            
+            loadCalendarEvents();
+        }
+
+        function prevMonth() {
+            currentCalendarDate.setMonth(currentCalendarDate.getMonth() - 1);
+            renderCalendar();
+        }
+
+        function nextMonth() {
+            currentCalendarDate.setMonth(currentCalendarDate.getMonth() + 1);
+            renderCalendar();
+        }
+
+        function selectDate(day) {
+            selectedCalendarDate = new Date(currentCalendarDate.getFullYear(), currentCalendarDate.getMonth(), day);
+            renderCalendar();
+        }
+
+        function loadCalendarEvents() {
+            const events = JSON.parse(localStorage.getItem('calendarEvents') || '[]');
+            const dateStr = selectedCalendarDate.toDateString();
+            const dayEvents = events.filter(e => new Date(e.date).toDateString() === dateStr);
+            
+            const eventsContainer = document.getElementById('calendarEvents');
+            const dateDisplay = document.getElementById('selectedDateDisplay');
+            dateDisplay.textContent = selectedCalendarDate.toLocaleDateString();
+            
+            if (dayEvents.length === 0) {
+                eventsContainer.innerHTML = '<p>No events</p>';
+            } else {
+                eventsContainer.innerHTML = dayEvents.map(e => 
+                    `<div class="expense-item">
+                        <div>
+                            <strong>${e.title}</strong><br>
+                            <small>${e.time} - ${e.description}</small>
+                        </div>
+                    </div>`
+                ).join('');
+            }
+        }
+
+        function saveEvent() {
+            const title = document.getElementById('eventTitle').value;
+            const time = document.getElementById('eventTime').value;
+            const description = document.getElementById('eventDescription').value;
+            
+            if (!title) {
+                showToast('Please enter event title', 'error');
+                return;
+            }
+            
+            const events = JSON.parse(localStorage.getItem('calendarEvents') || '[]');
+            events.push({
+                id: Date.now(),
+                date: selectedCalendarDate.toISOString(),
+                title,
+                time,
+                description
+            });
+            
+            localStorage.setItem('calendarEvents', JSON.stringify(events));
+            closeModal('addEventModal');
+            loadCalendarEvents();
+            showToast('Event saved!', 'success');
+            
+            // Clear form
+            document.getElementById('eventTitle').value = '';
+            document.getElementById('eventTime').value = '';
+            document.getElementById('eventDescription').value = '';
+        }
+
+        // Expense Functions
+        function loadExpenses() {
+            const expenses = JSON.parse(localStorage.getItem('expenses') || '[]');
+            const list = document.getElementById('expenseList');
+            
+            let total = 0;
+            if (expenses.length === 0) {
+                list.innerHTML = '<p style="text-align: center; color: var(--secondary);">No expenses recorded</p>';
+            } else {
+                list.innerHTML = expenses.map(e => {
+                    total += parseFloat(e.amount);
+                    return `<div class="expense-item">
+                        <div>
+                            <strong>${e.description}</strong><br>
+                            <small>${e.category} - ${e.date}</small>
+                        </div>
+                        <div>
+                            <strong>$${parseFloat(e.amount).toFixed(2)}</strong>
+                            <button onclick="deleteExpense(${e.id})" style="margin-left: 10px; color: var(--danger); background: none; border: none; cursor: pointer;">
+                                <i class="fas fa-trash"></i>
+                            </button>
+                        </div>
+                    </div>`;
+                }).join('');
+            }
+            
+            document.getElementById('expenseTotal').textContent = '$' + total.toFixed(2);
+        }
+
+        function addExpense() {
+            const description = document.getElementById('expenseDescription').value;
+            const amount = document.getElementById('expenseAmount').value;
+            const category = document.getElementById('expenseCategory').value;
+            const date = document.getElementById('expenseDate').value;
+            
+            if (!description || !amount) {
+                showToast('Please fill in all fields', 'error');
+                return;
+            }
+            
+            const expenses = JSON.parse(localStorage.getItem('expenses') || '[]');
+            expenses.push({
+                id: Date.now(),
+                description,
+                amount,
+                category,
+                date
+            });
+            
+            localStorage.setItem('expenses', JSON.stringify(expenses));
+            loadExpenses();
+            showToast('Expense added!', 'success');
+            
+            // Clear form
+            document.getElementById('expenseDescription').value = '';
+            document.getElementById('expenseAmount').value = '';
+        }
+
+        function deleteExpense(id) {
+            let expenses = JSON.parse(localStorage.getItem('expenses') || '[]');
+            expenses = expenses.filter(e => e.id !== id);
+            localStorage.setItem('expenses', JSON.stringify(expenses));
+            loadExpenses();
+            showToast('Expense deleted', 'success');
+        }
+
+        // Meal Functions
+        function loadMeals() {
+            const meals = JSON.parse(localStorage.getItem('meals') || '{}');
+            const today = new Date().toDateString();
+            const todayMeals = meals[today] || { breakfast: '', lunch: '', dinner: '' };
+            
+            document.getElementById('breakfastInput').value = todayMeals.breakfast || '';
+            document.getElementById('lunchInput').value = todayMeals.lunch || '';
+            document.getElementById('dinnerInput').value = todayMeals.dinner || '';
+            
+            updateMealSummary(todayMeals);
+        }
+
+        function saveMeal(type) {
+            const input = document.getElementById(type + 'Input');
+            const value = input.value;
+            
+            if (!value) {
+                showToast('Please enter meal details', 'error');
+                return;
+            }
+            
+            const meals = JSON.parse(localStorage.getItem('meals') || '{}');
+            const today = new Date().toDateString();
+            
+            if (!meals[today]) {
+                meals[today] = { breakfast: '', lunch: '', dinner: '' };
+            }
+            
+            meals[today][type] = value;
+            localStorage.setItem('meals', JSON.stringify(meals));
+            
+            updateMealSummary(meals[today]);
+            showToast(type + ' saved!', 'success');
+        }
+
+        function updateMealSummary(meals) {
+            const summary = document.getElementById('mealSummaryText');
+            const parts = [];
+            if (meals.breakfast) parts.push('🌅 Breakfast: ' + meals.breakfast);
+            if (meals.lunch) parts.push('☀️ Lunch: ' + meals.lunch);
+            if (meals.dinner) parts.push('🌙 Dinner: ' + meals.dinner);
+            
+            summary.textContent = parts.length > 0 ? parts.join(' | ') : 'No meals logged yet';
+        }
+
+        // Exercise Functions
+        function loadExercises() {
+            const exercises = JSON.parse(localStorage.getItem('exercises') || '[]');
+            const today = new Date().toDateString();
+            const todayExercises = exercises.filter(e => new Date(e.date).toDateString() === today);
+            
+            const list = document.getElementById('exerciseList');
+            let totalMinutes = 0;
+            
+            if (todayExercises.length === 0) {
+                list.innerHTML = '<p style="text-align: center; color: var(--secondary);">No exercises today</p>';
+            } else {
+                list.innerHTML = todayExercises.map(e => {
+                    totalMinutes += parseInt(e.duration) || 0;
+                    return `<div class="exercise-item ${e.completed ? 'completed' : ''}">
+                        <input type="checkbox" ${e.completed ? 'checked' : ''} onchange="toggleExercise(${e.id})">
+                        <div style="flex: 1;">
+                            <strong>${e.name}</strong>
+                            <small> - ${e.duration} minutes</small>
+                        </div>
+                        <button onclick="deleteExercise(${e.id})" style="color: var(--danger); background: none; border: none; cursor: pointer;">
+                            <i class="fas fa-trash"></i>
+                        </button>
+                    </div>`;
+                }).join('');
+            }
+            
+            document.getElementById('exerciseSummary').textContent = totalMinutes + ' minutes exercised today';
+        }
+
+        function addExercise() {
+            const name = document.getElementById('exerciseInput').value;
+            const duration = document.getElementById('exerciseDuration').value;
+            
+            if (!name || !duration) {
+                showToast('Please fill in all fields', 'error');
+                return;
+            }
+            
+            const exercises = JSON.parse(localStorage.getItem('exercises') || '[]');
+            exercises.push({
+                id: Date.now(),
+                date: new Date().toISOString(),
+                name,
+                duration,
+                completed: false
+            });
+            
+            localStorage.setItem('exercises', JSON.stringify(exercises));
+            loadExercises();
+            showToast('Exercise added!', 'success');
+            
+            document.getElementById('exerciseInput').value = '';
+            document.getElementById('exerciseDuration').value = '';
+        }
+
+        function toggleExercise(id) {
+            const exercises = JSON.parse(localStorage.getItem('exercises') || '[]');
+            const exercise = exercises.find(e => e.id === id);
+            if (exercise) {
+                exercise.completed = !exercise.completed;
+                localStorage.setItem('exercises', JSON.stringify(exercises));
+                loadExercises();
+            }
+        }
+
+        function deleteExercise(id) {
+            let exercises = JSON.parse(localStorage.getItem('exercises') || '[]');
+            exercises = exercises.filter(e => e.id !== id);
+            localStorage.setItem('exercises', JSON.stringify(exercises));
+            loadExercises();
+            showToast('Exercise deleted', 'success');
+        }
+
+        // Password Functions
+        function loadPasswords() {
+            const passwords = JSON.parse(localStorage.getItem('passwords') || '[]');
+            const list = document.getElementById('passwordList');
+            
+            if (passwords.length === 0) {
+                list.innerHTML = '<p style="text-align: center; color: var(--secondary);">No passwords saved</p>';
+            } else {
+                list.innerHTML = passwords.map(p => `
+                    <div class="password-item">
+                        <div>
+                            <strong>${p.site}</strong><br>
+                            <small>${p.username}</small>
+                        </div>
+                        <div class="actions">
+                            <span class="password-value">••••••••</span>
+                            <button onclick="copyPassword('${p.password}')" style="background: var(--primary); color: white;">
+                                <i class="fas fa-copy"></i>
+                            </button>
+                            <button onclick="deletePassword(${p.id})" style="background: var(--danger); color: white;">
+                                <i class="fas fa-trash"></i>
+                            </button>
+                        </div>
+                    </div>
+                `).join('');
+            }
+        }
+
+        function addPassword() {
+            const site = document.getElementById('passwordSite').value;
+            const username = document.getElementById('passwordUsername').value;
+            const password = document.getElementById('passwordValue').value;
+            
+            if (!site || !password) {
+                showToast('Please fill in site and password', 'error');
+                return;
+            }
+            
+            const passwords = JSON.parse(localStorage.getItem('passwords') || '[]');
+            passwords.push({
+                id: Date.now(),
+                site,
+                username,
+                password
+            });
+            
+            localStorage.setItem('passwords', JSON.stringify(passwords));
+            loadPasswords();
+            showToast('Password saved!', 'success');
+            
+            document.getElementById('passwordSite').value = '';
+            document.getElementById('passwordUsername').value = '';
+            document.getElementById('passwordValue').value = '';
+        }
+
+        function copyPassword(password) {
+            navigator.clipboard.writeText(password);
+            showToast('Password copied!', 'success');
+        }
+
+        function deletePassword(id) {
+            let passwords = JSON.parse(localStorage.getItem('passwords') || '[]');
+            passwords = passwords.filter(p => p.id !== id);
+            localStorage.setItem('passwords', JSON.stringify(passwords));
+            loadPasswords();
+            showToast('Password deleted', 'success');
+        }
+
+        // Social Functions
+        function loadSocialAccounts() {
+            const accounts = JSON.parse(localStorage.getItem('socialAccounts') || '{}');
+            
+            ['facebook', 'twitter', 'instagram', 'linkedin', 'youtube', 'github'].forEach(platform => {
+                document.getElementById('social-' + platform).textContent = accounts[platform] || 'Not set';
+            });
+        }
+
+        function saveSocialAccounts() {
+            const accounts = {
+                facebook: document.getElementById('editFacebook').value,
+                twitter: document.getElementById('editTwitter').value,
+                instagram: document.getElementById('editInstagram').value,
+                linkedin: document.getElementById('editLinkedin').value,
+                youtube: document.getElementById('editYoutube').value,
+                github: document.getElementById('editGithub').value
+            };
+            
+            localStorage.setItem('socialAccounts', JSON.stringify(accounts));
+            loadSocialAccounts();
+            closeModal('socialEditModal');
+            showToast('Social accounts saved!', 'success');
+        }
+
+        function copySocial(platform) {
+            const accounts = JSON.parse(localStorage.getItem('socialAccounts') || '{}');
+            const value = accounts[platform];
+            
+            if (value && value !== 'Not set') {
+                navigator.clipboard.writeText(value);
+                showToast(platform + ' username copied!', 'success');
+            } else {
+                showToast('No username set for ' + platform, 'error');
+            }
+        }
+
+        // Document Functions
+        function loadDocuments() {
+            const documents = JSON.parse(localStorage.getItem('documents') || '[]');
+            const list = document.getElementById('documentList');
+            
+            if (documents.length === 0) {
+                list.innerHTML = '<p style="text-align: center; color: var(--secondary);">No documents</p>';
+            } else {
+                list.innerHTML = documents.map(d => `
+                    <div class="document-item" onclick="openDocument(${d.id})">
+                        <i class="fas fa-file-alt"></i>
+                        <div>
+                            <strong>${d.title}</strong><br>
+                            <small>${new Date(d.date).toLocaleDateString()}</small>
+                        </div>
+                    </div>
+                `).join('');
+            }
+        }
+
+        function createDocument() {
+            const title = document.getElementById('documentTitle').value;
+            
+            if (!title) {
+                showToast('Please enter document title', 'error');
+                return;
+            }
+            
+            const documents = JSON.parse(localStorage.getItem('documents') || '[]');
+            documents.push({
+                id: Date.now(),
+                title,
+                content: '',
+                date: new Date().toISOString()
+            });
+            
+            localStorage.setItem('documents', JSON.stringify(documents));
+            loadDocuments();
+            showToast('Document created!', 'success');
+            document.getElementById('documentTitle').value = '';
+        }
+
+        function openDocument(id) {
+            const documents = JSON.parse(localStorage.getItem('documents') || '[]');
+            const doc = documents.find(d => d.id === id);
+            
+            if (doc) {
+                currentDocumentId = id;
+                document.getElementById('documentViewerTitle').textContent = doc.title;
+                document.getElementById('documentViewerContent').value = doc.content || '';
+                document.getElementById('documentViewerModal').classList.add('show');
+            }
+        }
+
+        function saveDocumentContent() {
+            const content = document.getElementById('documentViewerContent').value;
+            const documents = JSON.parse(localStorage.getItem('documents') || '[]');
+            const doc = documents.find(d => d.id === currentDocumentId);
+            
+            if (doc) {
+                doc.content = content;
+                doc.date = new Date().toISOString();
+                localStorage.setItem('documents', JSON.stringify(documents));
+                showToast('Document saved!', 'success');
+            }
+        }
+
+        function deleteCurrentDocument() {
+            if (confirm('Are you sure you want to delete this document?')) {
+                let documents = JSON.parse(localStorage.getItem('documents') || '[]');
+                documents = documents.filter(d => d.id !== currentDocumentId);
+                localStorage.setItem('documents', JSON.stringify(documents));
+                closeModal('documentViewerModal');
+                loadDocuments();
+                showToast('Document deleted', 'success');
+            }
+        }
+
+        // Timetable Functions
+        function loadTimetable() {
+            const timetable = JSON.parse(localStorage.getItem('timetable') || '[]');
+            const grid = document.getElementById('timetableGrid');
+            
+            const days = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'];
+            
+            grid.innerHTML = days.map(day => {
+                const dayItems = timetable.filter(t => t.day === day);
+                return `
+                    <div class="timetable-day">
+                        <h4>${day}</h4>
+                        ${dayItems.length === 0 ? '<p style="font-size: 12px; color: var(--secondary);">No schedules</p>' : ''}
+                        ${dayItems.map(t => `
+                            <div class="timetable-item">
+                                <strong>${t.time}</strong><br>
+                                ${t.activity}
+                                <button onclick="deleteTimetable(${t.id})" style="float: right; background: none; border: none; color: var(--danger); cursor: pointer;">
+                                    <i class="fas fa-trash"></i>
+                                </button>
+                            </div>
+                        `).join('')}
+                    </div>
+                `;
+            }).join('');
+        }
+
+        function saveTimetable() {
+            const day = document.getElementById('timetableDay').value;
+            const time = document.getElementById('timetableTime').value;
+            const activity = document.getElementById('timetableActivity').value;
+            
+            if (!time || !activity) {
+                showToast('Please fill in all fields', 'error');
+                return;
+            }
+            
+            const timetable = JSON.parse(localStorage.getItem('timetable') || '[]');
+            timetable.push({
+                id: Date.now(),
+                day,
+                time,
+                activity
+            });
+            
+            localStorage.setItem('timetable', JSON.stringify(timetable));
+            loadTimetable();
+            closeModal('addTimetableModal');
+            showToast('Schedule saved!', 'success');
+            
+            document.getElementById('timetableTime').value = '';
+            document.getElementById('timetableActivity').value = '';
+        }
+
+        function deleteTimetable(id) {
+            let timetable = JSON.parse(localStorage.getItem('timetable') || '[]');
+            timetable = timetable.filter(t => t.id !== id);
+            localStorage.setItem('timetable', JSON.stringify(timetable));
+            loadTimetable();
+            showToast('Schedule deleted', 'success');
+        }
+
+        // AI Assistant Functions
+        function sendAIMessage() {
+            const input = document.getElementById('aiInput');
+            const message = input.value.trim();
+            
+            if (!message) return;
+            
+            // Add user message
+            const chat = document.getElementById('aiChat');
+            chat.innerHTML += `
+                <div class="ai-message user">
+                    <strong>You:</strong>
+                    <p>${message}</p>
+                </div>
+            `;
+            
+            input.value = '';
+            chat.scrollTop = chat.scrollHeight;
+            
+            // Generate AI response
+            setTimeout(() => {
+                const response = generateAIResponse(message);
+                chat.innerHTML += `
+                    <div class="ai-message ai">
+                        <strong>AI Assistant:</strong>
+                        <p>${response}</p>
+                    </div>
+                `;
+                chat.scrollTop = chat.scrollHeight;
+            }, 1000);
+        }
+
+        function generateAIResponse(message) {
+            const lowerMessage = message.toLowerCase();
+            
+            // Simple AI responses based on keywords
+            if (lowerMessage.includes('hello') || lowerMessage.includes('hi')) {
+                return "Hello! How can I help you today?";
+            }
+            if (lowerMessage.includes('expense') || lowerMessage.includes('money')) {
+                return "You can track your expenses in the Expenses section. Add each purchase with its amount and category to keep track of your spending.";
+            }
+            if (lowerMessage.includes('meal') || lowerMessage.includes('food') || lowerMessage.includes('eat')) {
+                return "Use the Meals section to log your breakfast, lunch, and dinner. This helps you maintain healthy eating habits!";
+            }
+            if (lowerMessage.includes('exercise') || lowerMessage.includes('workout') || lowerMessage.includes('fitness')) {
+                return "Stay active! Log your exercises in the Exercise section. Aim for at least 30 minutes of activity daily.";
+            }
+            if (lowerMessage.includes('password') || lowerMessage.includes('security')) {
+                return "Keep your passwords safe in the Password Manager. Never share your master password with anyone!";
+            }
+            if (lowerMessage.includes('calendar') || lowerMessage.includes('schedule') || lowerMessage.includes('event')) {
+                return "Use the Calendar to add events and the Timetable for recurring weekly schedules. Stay organized!";
+            }
+            if (lowerMessage.includes('thank')) {
+                return "You're welcome! Feel free to ask me anything else.";
+            }
+            if (lowerMessage.includes('help')) {
+                return "I can help you with: expense tracking, meal planning, exercise logging, password management, calendar events, and more. Just ask!";
+            }
+            if (lowerMessage.includes('time') || lowerMessage.includes('date')) {
+                return "Current date and time: " + new Date().toLocaleString();
+            }
+            if (lowerMessage.includes('calculate') || lowerMessage.includes('math')) {
+                return "Use the Calculator section for any mathematical calculations. It supports basic operations like +, -, ×, ÷";
+            }
+            
+            // Default responses
+            const defaultResponses = [
+                "That's interesting! Tell me more about it.",
+                "I'm here to help you manage your daily activities. Is there something specific you'd like assistance with?",
+                "Great question! You can use the various sections of this dashboard to stay organized.",
+                "I'm your personal AI assistant. I can help you with tips on productivity, health, and organization.",
+                "Thanks for sharing! Is there anything specific you'd like help with?"
+            ];
+            
+            return defaultResponses[Math.floor(Math.random() * defaultResponses.length)];
+        }
+
+        // Overview Update
+        function updateOverview() {
+            // Expenses
+            const expenses = JSON.parse(localStorage.getItem('expenses') || '[]');
+            const currentMonth = new Date().getMonth();
+            const currentYear = new Date().getFullYear();
+            const monthExpenses = expenses.filter(e => {
+                const date = new Date(e.date);
+                return date.getMonth() === currentMonth && date.getFullYear() === currentYear;
+            });
+            const totalExpenses = monthExpenses.reduce((sum, e) => sum + parseFloat(e.amount), 0);
+            document.getElementById('overviewExpenses').textContent = '$' + totalExpenses.toFixed(2);
+            
+            // Today's Schedule
+            const events = JSON.parse(localStorage.getItem('calendarEvents') || '[]');
+            const today = new Date().toDateString();
+            const todayEvents = events.filter(e => new Date(e.date).toDateString() === today);
+            document.getElementById('overviewSchedule').innerHTML = todayEvents.length > 0 
+                ? todayEvents.map(e => `<div class="expense-item"><strong>${e.time}</strong> - ${e.title}</div>`).join('')
+                : '<p>No events scheduled</p>';
+            
+            // Today's Meals
+            const meals = JSON.parse(localStorage.getItem('meals') || '{}');
+            const todayMeals = meals[today] || { breakfast: '', lunch: '', dinner: '' };
+            const mealParts = [];
+            if (todayMeals.breakfast) mealParts.push('🌅 ' + todayMeals.breakfast);
+            if (todayMeals.lunch) mealParts.push('☀️ ' + todayMeals.lunch);
+            if (todayMeals.dinner) mealParts.push('🌙 ' + todayMeals.dinner);
+            document.getElementById('overviewMeals').innerHTML = mealParts.length > 0 
+                ? mealParts.map(m => `<div class="expense-item">${m}</div>`).join('')
+                : '<p>No meals logged</p>';
+            
+            // Exercise
+            const exercises = JSON.parse(localStorage.getItem('exercises') || '[]');
+            const todayExercises = exercises.filter(e => new Date(e.date).toDateString() === today);
+            const totalMinutes = todayExercises.reduce((sum, e) => sum + (parseInt(e.duration) || 0), 0);
+            const completedCount = todayExercises.filter(e => e.completed).length;
+            document.getElementById('overviewExercise').innerHTML = todayExercises.length > 0 
+                ? `<div class="meal-summary"><h4>${totalMinutes} minutes</h4><p>${completedCount}/${todayExercises.length} completed</p></div>`
+                : '<p>No exercises logged</p>';
+            
+            // Stats
+            const totalPasswords = JSON.parse(localStorage.getItem('passwords') || '[]').length;
+            const totalDocuments = JSON.parse(localStorage.getItem('documents') || '[]').length;
+            const totalSocial = Object.keys(JSON.parse(localStorage.getItem('socialAccounts') || '{}')).filter(k => JSON.parse(localStorage.getItem('socialAccounts') || '{}')[k]).length;
+            document.getElementById('overviewStats').innerHTML = `
+                <div class="grid-3">
+                    <div style="text-align: center;">
+                        <h3 style="color: var(--primary);">${totalPasswords}</h3>
+                        <small>Passwords</small>
+                    </div>
+                    <div style="text-align: center;">
+                        <h3 style="color: var(--success);">${totalDocuments}</h3>
+                        <small>Documents</small>
+                    </div>
+                    <div style="text-align: center;">
+                        <h3 style="color: var(--warning);">${totalSocial}</h3>
+                        <small>Social</small>
+                    </div>
+                </div>
+            `;
+        }
+    </script>
+</body>
+</html>
